@@ -19,6 +19,8 @@ class UserSeeder extends Seeder
             'name' => 'Admin Dega',
             'email' => 'dedut@gmail.com',
             'password' => Hash::make('123456'),
+            'phone' => '08123456789',
+            'roles' => 'ADMIN',
         ]);
     }
 }
