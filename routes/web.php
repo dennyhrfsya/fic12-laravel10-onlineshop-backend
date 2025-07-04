@@ -23,4 +23,8 @@ Route::middleware(['auth'])->group(function () {
         return view('pages.dashboard');
     })->name('home');
     Route::resource('user', UserController::class);
+    // Kategori
+    Route::resource('category', \App\Http\Controllers\CategoryController::class);
+    // Produk
+    Route::resource('product', \App\Http\Controllers\ProductController::class);
 });

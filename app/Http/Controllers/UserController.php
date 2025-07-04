@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -26,13 +27,16 @@ class UserController extends Controller
     //create
     public function create()
     {
-        return view('pages.dashboard');
+        return view('pages.user.create');
     }
 
     //store
     public function store(Request $request)
     {
-        return view('pages.dashboard');
+        $data = $request->all();
+        $data['password'] = Hash::make($request->input('password'));
+        User::create($data);
+        return redirect()->route('user.index');
     }
 
     //show
@@ -44,18 +48,34 @@ class UserController extends Controller
     //edit
     public function edit($id)
     {
-        return view('pages.dashboard');
+        $user = User::findOrFail($id);
+        return view('pages.user.edit', compact('user'));
     }
 
     //update
     public function update(Request $request, $id)
     {
-        return view('pages.dashboard');
+        $data = $request->all();
+        $user = User::findOrFail($id);
+
+        // cek jika password tidak kosong
+        if ($request->input('password')) {
+            $data['password'] = Hash::make($request->input('password'));
+        } else {
+            // jika password kosong, menggunakan password lama
+            $data['password'] = $user->password;
+        }
+
+        $user->update($data);
+        return redirect()->route('user.index');
     }
 
     //destroy
     public function destroy($id)
     {
-        return view('pages.dashboard');
+        // hapus user
+        $user = User::findOrFail($id);
+        $user->delete();
+        return redirect()->route('user.index');
     }
 }
