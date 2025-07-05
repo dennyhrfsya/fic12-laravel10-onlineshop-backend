@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -31,12 +33,12 @@ class UserController extends Controller
     }
 
     //store
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
         $data = $request->all();
         $data['password'] = Hash::make($request->input('password'));
         User::create($data);
-        return redirect()->route('user.index');
+        return redirect()->route('user.index')->with('success', 'User created successfully!');
     }
 
     //show
@@ -53,10 +55,11 @@ class UserController extends Controller
     }
 
     //update
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $data = $request->all();
-        $user = User::findOrFail($id);
+        // $data = $request->all();
+        // $user = User::findOrFail($id);
+        $data = $request->validated();
 
         // cek jika password tidak kosong
         if ($request->input('password')) {
@@ -67,7 +70,7 @@ class UserController extends Controller
         }
 
         $user->update($data);
-        return redirect()->route('user.index');
+        return redirect()->route('user.index')->with('success', 'User updated successfully!');
     }
 
     //destroy
@@ -76,6 +79,6 @@ class UserController extends Controller
         // hapus user
         $user = User::findOrFail($id);
         $user->delete();
-        return redirect()->route('user.index');
+        return redirect()->route('user.index')->with('success', 'User deleted successfully!');
     }
 }
